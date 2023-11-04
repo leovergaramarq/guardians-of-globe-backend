@@ -1,0 +1,36 @@
+version: "3.8"
+
+# networks:
+#   network:
+#     name: network
+
+services:
+  # api:
+  #   container_name: guardians_of_globe_api
+  #   restart: unless-stopped
+  #   build: ./GuardiansOfGlobeApi
+  #   # environment:
+  #   #   - ASPNETCORE_ENVIRONMENT=Development
+  #   #   - ASPNETCORE_URLS=http://+:80
+  #   links:
+  #     - db
+  #   # ports:
+  #   #   - 5024:5024
+  #   # networks:
+  #   #   - network
+  #   volumes:
+  #     - ./GuardiansOfGlobeApi:/app
+  db:
+    container_name: guardians_of_globe_db
+    restart: unless-stopped
+    image: gvenzl/oracle-free
+    # ports:
+    #   - 1520:1521
+    # networks:
+    #   - network
+    environment:
+      - ORACLE_PASSWORD=baconofhope
+    volumes:
+      - ./db/data:/opt/oracle/oradata
+      - ./db/scripts/init.sql:/container-entrypoint-initdb.d/init.sql
+    # entrypoint: ["/scripts/init.sql"]
