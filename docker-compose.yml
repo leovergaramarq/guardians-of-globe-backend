@@ -24,12 +24,15 @@ services:
     container_name: guardians_of_globe_db
     restart: unless-stopped
     image: gvenzl/oracle-free
-    # ports:
-    #   - 1520:1521
+    ports:
+      - 1520:1521
     # networks:
     #   - network
     environment:
       - ORACLE_PASSWORD=baconofhope
+      - APP_USER=GUARDIAN
+      - APP_USER_PASSWORD=GUARDIAN
+      - ORACLE_DATABASE=PDB1
     volumes:
       - ./db/data:/opt/oracle/oradata
       - ./db/scripts/init.sql:/container-entrypoint-initdb.d/init.sql

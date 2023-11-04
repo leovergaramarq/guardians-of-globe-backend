@@ -1,15 +1,17 @@
 -- Setup user
 
 -- DROP USER GUARDIAN CASCADE;
-CREATE USER GUARDIAN IDENTIFIED BY GUARDIAN;
+-- CREATE USER GUARDIAN IDENTIFIED BY GUARDIAN;
 
-GRANT CONNECT, RESOURCE, DBA TO GUARDIAN;
-GRANT CREATE SESSION TO GUARDIAN WITH ADMIN OPTION;
-GRANT UNLIMITED TABLESPACE TO GUARDIAN;
-ALTER PROFILE DEFAULT LIMIT PASSWORD_REUSE_TIME UNLIMITED;
-ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
+-- GRANT CONNECT, RESOURCE, DBA TO GUARDIAN;
+-- GRANT UNLIMITED TABLESPACE TO GUARDIAN;
+-- GRANT CREATE SESSION TO GUARDIAN WITH ADMIN OPTION;
 
--- CONNECT GUARDIAN/GUARDIAN@LOCALHOST:1521/FREEPDB1;
+-- ALTER PROFILE DEFAULT LIMIT PASSWORD_REUSE_TIME UNLIMITED;
+-- ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
+
+-- Connection
+CONNECT GUARDIAN/GUARDIAN@LOCALHOST:1521/PDB1;
 
 -- Setup tables
 
@@ -797,7 +799,7 @@ INSERT INTO GUARDIAN.alter_ego_fight (fight_id, alter_ego_id, victory, side) VAL
 INSERT INTO GUARDIAN.alter_ego_fight (fight_id, alter_ego_id, victory, side) VALUES (9, 27, 1, 0); -- Thragg
 INSERT INTO GUARDIAN.alter_ego_fight (fight_id, alter_ego_id, victory, side) VALUES (9, 29, 1, 0); -- Anissa
 
-INSERT INTO GUARDIAN.fight (fight_id, date_start, date_end, location, title, description) VALUES (10, TO_DATE('2004-11-00', 'YYYY-MM-DD'), TO_DATE('2004-12-31', 'YYYY-MM-DD'), 'Earth', 'Invincible vs Omni-Man', 'The clash between Invincible and Omni-Man was a seismic event, shaking the foundations of heroism itself. In a gut-wrenching showdown, Mark Grayson confronted his own father, Nolan Grayson, with revelations that shattered the very core of their relationship. The battle unfolded in a maelstrom of emotion and devastating blows, leaving scars that would linger long after the dust settled.');
+INSERT INTO GUARDIAN.fight (fight_id, date_start, date_end, location, title, description) VALUES (10, TO_DATE('2004-11-01', 'YYYY-MM-DD'), TO_DATE('2004-12-31', 'YYYY-MM-DD'), 'Earth', 'Invincible vs Omni-Man', 'The clash between Invincible and Omni-Man was a seismic event, shaking the foundations of heroism itself. In a gut-wrenching showdown, Mark Grayson confronted his own father, Nolan Grayson, with revelations that shattered the very core of their relationship. The battle unfolded in a maelstrom of emotion and devastating blows, leaving scars that would linger long after the dust settled.');
 INSERT INTO GUARDIAN.alter_ego_fight (fight_id, alter_ego_id, victory, side) VALUES (10, 1, 0, 1); -- Invincible
 INSERT INTO GUARDIAN.alter_ego_fight (fight_id, alter_ego_id, victory, side) VALUES (10, 2, 1, 0); -- Omni-Man
 
