@@ -1,5 +1,4 @@
 using GuardiansOfGlobe.DataAccess.Models;
-using GuardiansOfGlobeApi.Endpoints;
 using Microsoft.EntityFrameworkCore;
 
 var env = "dev";
