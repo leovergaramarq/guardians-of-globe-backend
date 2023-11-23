@@ -19,14 +19,12 @@ services.AddDbContext<ModelContext>((optBuilder) =>
 
 // Add services to the container.
 
-services.AddControllers();
+services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+); ;
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
-
-// Configure Endpoints
-//Endpoints endpoints = new();
-//endpoints.Init(services);
 
 var app = builder.Build();
 

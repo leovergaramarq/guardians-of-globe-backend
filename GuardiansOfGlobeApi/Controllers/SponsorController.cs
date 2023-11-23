@@ -19,7 +19,13 @@ namespace GuardiansOfGlobeApi.Controllers
         {
             try
             {
-                return await _context.Sponsors.ToListAsync();
+                var sponsors = await _context.Sponsors
+                    .Include(s => s.SponsorSource)
+                    .Include(s => s.Sponsorships)
+                    //.ThenInclude(s => s.AlterEgo)
+                    .ToListAsync();
+                
+                return sponsors;
             }
             catch (Exception e)
             {

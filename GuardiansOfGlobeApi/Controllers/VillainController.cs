@@ -19,14 +19,14 @@ namespace GuardiansOfGlobeApi.Controllers
         {
             try
             {
-
-                Task<List<AlterEgo>> villains = (
-                    from alterEgo in _context.AlterEgos
-                    where alterEgo.IsHero == false
-                    select alterEgo
-                ).ToListAsync();
-
-                return await villains;
+                return await _context.AlterEgos
+                    .Where(a => a.IsHero == false)
+                    .Include(a => a.Person)
+                    .Include(a => a.AlterEgoAbilities)
+                    .Include(a => a.AlterEgoFights)
+                    .Include(a => a.AlterEgoWeaknesses)
+                    .Include(a => a.Sponsorships)
+                    .ToListAsync();
             }
             catch (Exception e)
             {

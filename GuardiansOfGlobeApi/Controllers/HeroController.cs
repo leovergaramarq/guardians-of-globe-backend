@@ -15,18 +15,32 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AlterEgo>>> FindMany()
+        public async Task<ActionResult<List<AlterEgo>>> FindMany(string? name, double? relationship, string? ability)
         {
             try
             {
+                var result = await _context.AlterEgos
+                    .Where(a => a.IsHero == true)
+                    .Include(a => a.Person)
+                    .Include(a => a.AlterEgoAbilities)
+                    .Include(a => a.AlterEgoFights)
+                    .Include(a => a.AlterEgoWeaknesses)
+                    .Include(a => a.Sponsorships)
+                    .ToListAsync();
+                
+                if (result != null)
+                {
+                    if (name != null)
+                    {
 
-                Task<List<AlterEgo>> heroes = (
-                    from alterEgo in _context.AlterEgos
-                    where alterEgo.IsHero == true
-                    select alterEgo
-                ).ToListAsync();
-
-                return await heroes;
+                    result = result.Where(a => a.Person.PersonName.Contains(name)).ToList();
+                    }
+                    if (ability != null)
+                    {
+                        result = result.Where(a => a.AlterEgoAbilities.Where(ab => ab.AbilityName.Contains(ability)).ToList().Count != 0).ToList();
+                    }
+                }
+                return result;
             }
             catch (Exception e)
             {
@@ -88,8 +102,6 @@ namespace GuardiansOfGlobeApi.Controllers
                 return BadRequest("Missing data");
             
             if (heroUpdate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroUpdate.IsHero = true;
 
             try
             {

@@ -5,21 +5,21 @@ version: "3.8"
 #     name: network
 
 services:
-  api:
-    container_name: guardians_of_globe_api
-    restart: unless-stopped
-    build: ./GuardiansOfGlobeApi
-    # environment:
-    #   - ASPNETCORE_ENVIRONMENT=Development
-    #   - ASPNETCORE_URLS=http://+:80
-    links:
-      - db
-    # ports:
-    #   - 5024:5024
-    # networks:
-    #   - network
-    volumes:
-      - ./GuardiansOfGlobeApi:/app
+  # api:
+  #   container_name: guardians_of_globe_api
+  #   restart: unless-stopped
+  #   build: ./GuardiansOfGlobeApi
+  #   # environment:
+  #   #   - ASPNETCORE_ENVIRONMENT=Development
+  #   #   - ASPNETCORE_URLS=http://+:80
+  #   links:
+  #     - db
+  #   # ports:
+  #   #   - 5024:5024
+  #   # networks:
+  #   #   - network
+  #   volumes:
+  #     - ./GuardiansOfGlobeApi:/app
   db:
     container_name: guardians_of_globe_db
     restart: unless-stopped
