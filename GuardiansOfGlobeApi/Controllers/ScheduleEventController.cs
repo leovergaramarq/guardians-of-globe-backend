@@ -4,29 +4,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GuardiansOfGlobeApi.Controllers
 {
-    [Route("api/heroes")]
+    [Route("api/scheduleEvents")]
     [ApiController]
-    public class HeroController : ControllerBase
+    public class ScheduleEventController : ControllerBase
     {
         private readonly ModelContext _context;
         
-        public HeroController(ModelContext context) {
+        public ScheduleEventController(ModelContext context) {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AlterEgo>>> FindMany()
+        public async Task<ActionResult<List<ScheduleEvent>>> FindMany()
         {
             try
             {
-
-                Task<List<AlterEgo>> heroes = (
-                    from alterEgo in _context.AlterEgos
-                    where alterEgo.IsHero == true
-                    select alterEgo
-                ).ToListAsync();
-
-                return await heroes;
+                return await _context.ScheduleEvents.ToListAsync();
             }
             catch (Exception e)
             {
@@ -36,16 +29,16 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AlterEgo>> FindById(decimal id)
+        public async Task<ActionResult<ScheduleEvent>> FindById(decimal id)
         {
             try
             {
-                AlterEgo? hero = await _context.AlterEgos.FirstOrDefaultAsync(
-                    a => a.IsHero == true && a.AlterEgoId == id
+                ScheduleEvent? scheduleEvent = await _context.ScheduleEvents.FirstOrDefaultAsync(
+                    a => a.ScheduleEventId == id
                 );
 
-                if (hero != null)
-                    return hero;
+                if (scheduleEvent != null)
+                    return scheduleEvent;
                 else
                     return NotFound();
             } catch (Exception e) {
@@ -55,19 +48,15 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AlterEgo>> Create(AlterEgo heroCreate)
+        public async Task<ActionResult<ScheduleEvent>> Create(ScheduleEvent scheduleEventCreate)
         {
-            if (heroCreate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroCreate.IsHero = true;
-
             try
             {
-                await _context.AlterEgos.AddAsync(heroCreate);
+                await _context.ScheduleEvents.AddAsync(scheduleEventCreate);
                 await _context.SaveChangesAsync();
-                heroCreate.AlterEgoId = await _context.AlterEgos.MaxAsync(a => a.AlterEgoId);
+                scheduleEventCreate.ScheduleEventId = await _context.ScheduleEvents.MaxAsync(a => a.ScheduleEventId);
 
-                return heroCreate;
+                return scheduleEventCreate;
             }
             catch (DbUpdateException e)
             {
@@ -82,32 +71,28 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<AlterEgo>> Update(AlterEgo heroUpdate)
+        public async Task<ActionResult<ScheduleEvent>> Update(ScheduleEvent scheduleEventUpdate)
         {
-            if (heroUpdate == null || heroUpdate.AlterEgoId <= 0)
+            if (scheduleEventUpdate == null || scheduleEventUpdate.ScheduleEventId <= 0)
                 return BadRequest("Missing data");
-            
-            if (heroUpdate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroUpdate.IsHero = true;
 
             try
             {
-                AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == heroUpdate.AlterEgoId);
+                ScheduleEvent? scheduleEvent = await _context.ScheduleEvents.FirstOrDefaultAsync(a => a.ScheduleEventId == scheduleEventUpdate.ScheduleEventId);
 
-                if (alterEgo == null)
+                if (scheduleEvent == null)
                     return NotFound();
 
-                //alterEgo.AlterEgoId = heroUpdate.AlterEgoId;
-                alterEgo.PersonId = heroUpdate.PersonId;
-                alterEgo.Origin = heroUpdate.Origin;
-                alterEgo.IsHero = heroUpdate.IsHero;
-                alterEgo.Alias = heroUpdate.Alias;
+                // scheduleEvent.ScheduleEventId = scheduleEventUpdate.ScheduleEventId;
+                scheduleEvent.PersonId = scheduleEventUpdate.PersonId;
+                scheduleEvent.EventName = scheduleEventUpdate.EventName;
+                scheduleEvent.DateStart = scheduleEventUpdate.DateStart;
+                scheduleEvent.DateEnd = scheduleEventUpdate.DateEnd;
 
-                _context.AlterEgos.Update(alterEgo);
+                _context.ScheduleEvents.Update(scheduleEvent);
                 await _context.SaveChangesAsync();
 
-                return alterEgo;
+                return scheduleEvent;
             }
             catch (DbUpdateException e)
             {
@@ -124,14 +109,14 @@ namespace GuardiansOfGlobeApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete(decimal id)
         {
-            AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == id);
+            ScheduleEvent? scheduleEvent = await _context.ScheduleEvents.FirstOrDefaultAsync(a => a.ScheduleEventId == id);
 
-            if (alterEgo == null)
+            if (scheduleEvent == null)
                 return NotFound();
 
             try
             {
-                _context.AlterEgos.Remove(alterEgo);
+                _context.ScheduleEvents.Remove(scheduleEvent);
                 await _context.SaveChangesAsync();
                 return true;
             }

@@ -4,29 +4,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GuardiansOfGlobeApi.Controllers
 {
-    [Route("api/heroes")]
+    [Route("api/fights")]
     [ApiController]
-    public class HeroController : ControllerBase
+    public class FightController : ControllerBase
     {
         private readonly ModelContext _context;
         
-        public HeroController(ModelContext context) {
+        public FightController(ModelContext context) {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AlterEgo>>> FindMany()
+        public async Task<ActionResult<List<Fight>>> FindMany()
         {
             try
             {
-
-                Task<List<AlterEgo>> heroes = (
-                    from alterEgo in _context.AlterEgos
-                    where alterEgo.IsHero == true
-                    select alterEgo
-                ).ToListAsync();
-
-                return await heroes;
+                return await _context.Fights.ToListAsync();
             }
             catch (Exception e)
             {
@@ -36,16 +29,16 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AlterEgo>> FindById(decimal id)
+        public async Task<ActionResult<Fight>> FindById(decimal id)
         {
             try
             {
-                AlterEgo? hero = await _context.AlterEgos.FirstOrDefaultAsync(
-                    a => a.IsHero == true && a.AlterEgoId == id
+                Fight? fight = await _context.Fights.FirstOrDefaultAsync(
+                    a => a.FightId == id
                 );
 
-                if (hero != null)
-                    return hero;
+                if (fight != null)
+                    return fight;
                 else
                     return NotFound();
             } catch (Exception e) {
@@ -55,19 +48,15 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AlterEgo>> Create(AlterEgo heroCreate)
+        public async Task<ActionResult<Fight>> Create(Fight fightCreate)
         {
-            if (heroCreate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroCreate.IsHero = true;
-
             try
             {
-                await _context.AlterEgos.AddAsync(heroCreate);
+                await _context.Fights.AddAsync(fightCreate);
                 await _context.SaveChangesAsync();
-                heroCreate.AlterEgoId = await _context.AlterEgos.MaxAsync(a => a.AlterEgoId);
+                fightCreate.FightId = await _context.Fights.MaxAsync(a => a.FightId);
 
-                return heroCreate;
+                return fightCreate;
             }
             catch (DbUpdateException e)
             {
@@ -82,32 +71,29 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<AlterEgo>> Update(AlterEgo heroUpdate)
+        public async Task<ActionResult<Fight>> Update(Fight fightUpdate)
         {
-            if (heroUpdate == null || heroUpdate.AlterEgoId <= 0)
+            if (fightUpdate == null || fightUpdate.FightId <= 0)
                 return BadRequest("Missing data");
-            
-            if (heroUpdate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroUpdate.IsHero = true;
 
             try
             {
-                AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == heroUpdate.AlterEgoId);
+                Fight? fight = await _context.Fights.FirstOrDefaultAsync(a => a.FightId == fightUpdate.FightId);
 
-                if (alterEgo == null)
+                if (fight == null)
                     return NotFound();
 
-                //alterEgo.AlterEgoId = heroUpdate.AlterEgoId;
-                alterEgo.PersonId = heroUpdate.PersonId;
-                alterEgo.Origin = heroUpdate.Origin;
-                alterEgo.IsHero = heroUpdate.IsHero;
-                alterEgo.Alias = heroUpdate.Alias;
+                // fight.FightId = fightUpdate.FightId;
+                fight.DateStart = fightUpdate.DateStart;
+                fight.DateEnd = fightUpdate.DateEnd;
+                fight.Location = fightUpdate.Location;
+                fight.FightTitle = fightUpdate.FightTitle;
+                fight.Description = fightUpdate.Description;
 
-                _context.AlterEgos.Update(alterEgo);
+                _context.Fights.Update(fight);
                 await _context.SaveChangesAsync();
 
-                return alterEgo;
+                return fight;
             }
             catch (DbUpdateException e)
             {
@@ -124,14 +110,14 @@ namespace GuardiansOfGlobeApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete(decimal id)
         {
-            AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == id);
+            Fight? fight = await _context.Fights.FirstOrDefaultAsync(a => a.FightId == id);
 
-            if (alterEgo == null)
+            if (fight == null)
                 return NotFound();
 
             try
             {
-                _context.AlterEgos.Remove(alterEgo);
+                _context.Fights.Remove(fight);
                 await _context.SaveChangesAsync();
                 return true;
             }

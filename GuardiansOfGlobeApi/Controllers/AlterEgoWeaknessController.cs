@@ -4,29 +4,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GuardiansOfGlobeApi.Controllers
 {
-    [Route("api/heroes")]
+    [Route("api/alterEgoWeaknesses")]
     [ApiController]
-    public class HeroController : ControllerBase
+    public class AlterEgoWeaknessController : ControllerBase
     {
         private readonly ModelContext _context;
         
-        public HeroController(ModelContext context) {
+        public AlterEgoWeaknessController(ModelContext context) {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AlterEgo>>> FindMany()
+        public async Task<ActionResult<List<AlterEgoWeakness>>> FindMany()
         {
             try
             {
-
-                Task<List<AlterEgo>> heroes = (
-                    from alterEgo in _context.AlterEgos
-                    where alterEgo.IsHero == true
-                    select alterEgo
-                ).ToListAsync();
-
-                return await heroes;
+                return await _context.AlterEgoWeaknesses.ToListAsync();
             }
             catch (Exception e)
             {
@@ -36,16 +29,16 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AlterEgo>> FindById(decimal id)
+        public async Task<ActionResult<AlterEgoWeakness>> FindById(decimal id)
         {
             try
             {
-                AlterEgo? hero = await _context.AlterEgos.FirstOrDefaultAsync(
-                    a => a.IsHero == true && a.AlterEgoId == id
+                AlterEgoWeakness? alterEgoWeakness = await _context.AlterEgoWeaknesses.FirstOrDefaultAsync(
+                    a => a.AlterEgoWeaknessId == id
                 );
 
-                if (hero != null)
-                    return hero;
+                if (alterEgoWeakness != null)
+                    return alterEgoWeakness;
                 else
                     return NotFound();
             } catch (Exception e) {
@@ -55,19 +48,15 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AlterEgo>> Create(AlterEgo heroCreate)
+        public async Task<ActionResult<AlterEgoWeakness>> Create(AlterEgoWeakness alterEgoWeaknessCreate)
         {
-            if (heroCreate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroCreate.IsHero = true;
-
             try
             {
-                await _context.AlterEgos.AddAsync(heroCreate);
+                await _context.AlterEgoWeaknesses.AddAsync(alterEgoWeaknessCreate);
                 await _context.SaveChangesAsync();
-                heroCreate.AlterEgoId = await _context.AlterEgos.MaxAsync(a => a.AlterEgoId);
+                alterEgoWeaknessCreate.AlterEgoWeaknessId = await _context.AlterEgoWeaknesses.MaxAsync(a => a.AlterEgoWeaknessId);
 
-                return heroCreate;
+                return alterEgoWeaknessCreate;
             }
             catch (DbUpdateException e)
             {
@@ -82,32 +71,26 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<AlterEgo>> Update(AlterEgo heroUpdate)
+        public async Task<ActionResult<AlterEgoWeakness>> Update(AlterEgoWeakness alterEgoWeaknessUpdate)
         {
-            if (heroUpdate == null || heroUpdate.AlterEgoId <= 0)
+            if (alterEgoWeaknessUpdate == null || alterEgoWeaknessUpdate.AlterEgoWeaknessId <= 0)
                 return BadRequest("Missing data");
-            
-            if (heroUpdate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroUpdate.IsHero = true;
 
             try
             {
-                AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == heroUpdate.AlterEgoId);
+                AlterEgoWeakness? alterEgoWeakness = await _context.AlterEgoWeaknesses.FirstOrDefaultAsync(a => a.AlterEgoWeaknessId == alterEgoWeaknessUpdate.AlterEgoWeaknessId);
 
-                if (alterEgo == null)
+                if (alterEgoWeakness == null)
                     return NotFound();
 
-                //alterEgo.AlterEgoId = heroUpdate.AlterEgoId;
-                alterEgo.PersonId = heroUpdate.PersonId;
-                alterEgo.Origin = heroUpdate.Origin;
-                alterEgo.IsHero = heroUpdate.IsHero;
-                alterEgo.Alias = heroUpdate.Alias;
+                // alterEgoWeakness.AlterEgoWeaknessId = alterEgoWeaknessUpdate.AlterEgoWeaknessId;
+                alterEgoWeakness.AlterEgoId = alterEgoWeaknessUpdate.AlterEgoId;
+                alterEgoWeakness.WeaknessName = alterEgoWeaknessUpdate.WeaknessName;
 
-                _context.AlterEgos.Update(alterEgo);
+                _context.AlterEgoWeaknesses.Update(alterEgoWeakness);
                 await _context.SaveChangesAsync();
 
-                return alterEgo;
+                return alterEgoWeakness;
             }
             catch (DbUpdateException e)
             {
@@ -124,14 +107,14 @@ namespace GuardiansOfGlobeApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete(decimal id)
         {
-            AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == id);
+            AlterEgoWeakness? alterEgoWeakness = await _context.AlterEgoWeaknesses.FirstOrDefaultAsync(a => a.AlterEgoWeaknessId == id);
 
-            if (alterEgo == null)
+            if (alterEgoWeakness == null)
                 return NotFound();
 
             try
             {
-                _context.AlterEgos.Remove(alterEgo);
+                _context.AlterEgoWeaknesses.Remove(alterEgoWeakness);
                 await _context.SaveChangesAsync();
                 return true;
             }

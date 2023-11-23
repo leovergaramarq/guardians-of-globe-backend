@@ -4,29 +4,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GuardiansOfGlobeApi.Controllers
 {
-    [Route("api/heroes")]
+    [Route("api/relationships")]
     [ApiController]
-    public class HeroController : ControllerBase
+    public class RelationshipController : ControllerBase
     {
         private readonly ModelContext _context;
         
-        public HeroController(ModelContext context) {
+        public RelationshipController(ModelContext context) {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AlterEgo>>> FindMany()
+        public async Task<ActionResult<List<Relationship>>> FindMany()
         {
             try
             {
-
-                Task<List<AlterEgo>> heroes = (
-                    from alterEgo in _context.AlterEgos
-                    where alterEgo.IsHero == true
-                    select alterEgo
-                ).ToListAsync();
-
-                return await heroes;
+                return await _context.Relationships.ToListAsync();
             }
             catch (Exception e)
             {
@@ -36,16 +29,16 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AlterEgo>> FindById(decimal id)
+        public async Task<ActionResult<Relationship>> FindById(decimal id)
         {
             try
             {
-                AlterEgo? hero = await _context.AlterEgos.FirstOrDefaultAsync(
-                    a => a.IsHero == true && a.AlterEgoId == id
+                Relationship? relationship = await _context.Relationships.FirstOrDefaultAsync(
+                    a => a.RelationshipId == id
                 );
 
-                if (hero != null)
-                    return hero;
+                if (relationship != null)
+                    return relationship;
                 else
                     return NotFound();
             } catch (Exception e) {
@@ -55,19 +48,15 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AlterEgo>> Create(AlterEgo heroCreate)
+        public async Task<ActionResult<Relationship>> Create(Relationship relationshipCreate)
         {
-            if (heroCreate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroCreate.IsHero = true;
-
             try
             {
-                await _context.AlterEgos.AddAsync(heroCreate);
+                await _context.Relationships.AddAsync(relationshipCreate);
                 await _context.SaveChangesAsync();
-                heroCreate.AlterEgoId = await _context.AlterEgos.MaxAsync(a => a.AlterEgoId);
+                relationshipCreate.RelationshipId = await _context.Relationships.MaxAsync(a => a.RelationshipId);
 
-                return heroCreate;
+                return relationshipCreate;
             }
             catch (DbUpdateException e)
             {
@@ -82,32 +71,27 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<AlterEgo>> Update(AlterEgo heroUpdate)
+        public async Task<ActionResult<Relationship>> Update(Relationship relationshipUpdate)
         {
-            if (heroUpdate == null || heroUpdate.AlterEgoId <= 0)
+            if (relationshipUpdate == null || relationshipUpdate.RelationshipId <= 0)
                 return BadRequest("Missing data");
-            
-            if (heroUpdate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroUpdate.IsHero = true;
 
             try
             {
-                AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == heroUpdate.AlterEgoId);
+                Relationship? relationship = await _context.Relationships.FirstOrDefaultAsync(a => a.RelationshipId == relationshipUpdate.RelationshipId);
 
-                if (alterEgo == null)
+                if (relationship == null)
                     return NotFound();
 
-                //alterEgo.AlterEgoId = heroUpdate.AlterEgoId;
-                alterEgo.PersonId = heroUpdate.PersonId;
-                alterEgo.Origin = heroUpdate.Origin;
-                alterEgo.IsHero = heroUpdate.IsHero;
-                alterEgo.Alias = heroUpdate.Alias;
+                // relationship.RelationshipId = relationshipUpdate.RelationshipId;
+                relationship.Person1Id = relationshipUpdate.Person1Id;
+                relationship.Person2Id = relationshipUpdate.Person2Id;
+                relationship.RelationshipType = relationshipUpdate.RelationshipType;
 
-                _context.AlterEgos.Update(alterEgo);
+                _context.Relationships.Update(relationship);
                 await _context.SaveChangesAsync();
 
-                return alterEgo;
+                return relationship;
             }
             catch (DbUpdateException e)
             {
@@ -124,14 +108,14 @@ namespace GuardiansOfGlobeApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete(decimal id)
         {
-            AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == id);
+            Relationship? relationship = await _context.Relationships.FirstOrDefaultAsync(a => a.RelationshipId == id);
 
-            if (alterEgo == null)
+            if (relationship == null)
                 return NotFound();
 
             try
             {
-                _context.AlterEgos.Remove(alterEgo);
+                _context.Relationships.Remove(relationship);
                 await _context.SaveChangesAsync();
                 return true;
             }

@@ -4,29 +4,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GuardiansOfGlobeApi.Controllers
 {
-    [Route("api/heroes")]
+    [Route("api/sponsors")]
     [ApiController]
-    public class HeroController : ControllerBase
+    public class SponsorController : ControllerBase
     {
         private readonly ModelContext _context;
         
-        public HeroController(ModelContext context) {
+        public SponsorController(ModelContext context) {
             _context = context;
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<AlterEgo>>> FindMany()
+        public async Task<ActionResult<List<Sponsor>>> FindMany()
         {
             try
             {
-
-                Task<List<AlterEgo>> heroes = (
-                    from alterEgo in _context.AlterEgos
-                    where alterEgo.IsHero == true
-                    select alterEgo
-                ).ToListAsync();
-
-                return await heroes;
+                return await _context.Sponsors.ToListAsync();
             }
             catch (Exception e)
             {
@@ -36,16 +29,16 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AlterEgo>> FindById(decimal id)
+        public async Task<ActionResult<Sponsor>> FindById(decimal id)
         {
             try
             {
-                AlterEgo? hero = await _context.AlterEgos.FirstOrDefaultAsync(
-                    a => a.IsHero == true && a.AlterEgoId == id
+                Sponsor? sponsor = await _context.Sponsors.FirstOrDefaultAsync(
+                    a => a.SponsorId == id
                 );
 
-                if (hero != null)
-                    return hero;
+                if (sponsor != null)
+                    return sponsor;
                 else
                     return NotFound();
             } catch (Exception e) {
@@ -55,19 +48,15 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AlterEgo>> Create(AlterEgo heroCreate)
+        public async Task<ActionResult<Sponsor>> Create(Sponsor sponsorCreate)
         {
-            if (heroCreate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroCreate.IsHero = true;
-
             try
             {
-                await _context.AlterEgos.AddAsync(heroCreate);
+                await _context.Sponsors.AddAsync(sponsorCreate);
                 await _context.SaveChangesAsync();
-                heroCreate.AlterEgoId = await _context.AlterEgos.MaxAsync(a => a.AlterEgoId);
+                sponsorCreate.SponsorId = await _context.Sponsors.MaxAsync(a => a.SponsorId);
 
-                return heroCreate;
+                return sponsorCreate;
             }
             catch (DbUpdateException e)
             {
@@ -82,32 +71,26 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<AlterEgo>> Update(AlterEgo heroUpdate)
+        public async Task<ActionResult<Sponsor>> Update(Sponsor sponsorUpdate)
         {
-            if (heroUpdate == null || heroUpdate.AlterEgoId <= 0)
+            if (sponsorUpdate == null || sponsorUpdate.SponsorId <= 0)
                 return BadRequest("Missing data");
-            
-            if (heroUpdate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
-
-            heroUpdate.IsHero = true;
 
             try
             {
-                AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == heroUpdate.AlterEgoId);
+                Sponsor? sponsor = await _context.Sponsors.FirstOrDefaultAsync(a => a.SponsorId == sponsorUpdate.SponsorId);
 
-                if (alterEgo == null)
+                if (sponsor == null)
                     return NotFound();
 
-                //alterEgo.AlterEgoId = heroUpdate.AlterEgoId;
-                alterEgo.PersonId = heroUpdate.PersonId;
-                alterEgo.Origin = heroUpdate.Origin;
-                alterEgo.IsHero = heroUpdate.IsHero;
-                alterEgo.Alias = heroUpdate.Alias;
+                // sponsor.SponsorId = sponsorUpdate.SponsorId;
+                sponsor.SponsorSourceId = sponsorUpdate.SponsorSourceId;
+                sponsor.SponsorName = sponsorUpdate.SponsorName;
 
-                _context.AlterEgos.Update(alterEgo);
+                _context.Sponsors.Update(sponsor);
                 await _context.SaveChangesAsync();
 
-                return alterEgo;
+                return sponsor;
             }
             catch (DbUpdateException e)
             {
@@ -124,14 +107,14 @@ namespace GuardiansOfGlobeApi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<bool>> Delete(decimal id)
         {
-            AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == id);
+            Sponsor? sponsor = await _context.Sponsors.FirstOrDefaultAsync(a => a.SponsorId == id);
 
-            if (alterEgo == null)
+            if (sponsor == null)
                 return NotFound();
 
             try
             {
-                _context.AlterEgos.Remove(alterEgo);
+                _context.Sponsors.Remove(sponsor);
                 await _context.SaveChangesAsync();
                 return true;
             }

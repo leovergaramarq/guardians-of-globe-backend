@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GuardiansOfGlobeApi.Controllers
 {
-    [Route("api/heroes")]
+    [Route("api/villains")]
     [ApiController]
-    public class HeroController : ControllerBase
+    public class VillainController : ControllerBase
     {
         private readonly ModelContext _context;
         
-        public HeroController(ModelContext context) {
+        public VillainController(ModelContext context) {
             _context = context;
         }
 
@@ -20,13 +20,13 @@ namespace GuardiansOfGlobeApi.Controllers
             try
             {
 
-                Task<List<AlterEgo>> heroes = (
+                Task<List<AlterEgo>> villains = (
                     from alterEgo in _context.AlterEgos
-                    where alterEgo.IsHero == true
+                    where alterEgo.IsHero == false
                     select alterEgo
                 ).ToListAsync();
 
-                return await heroes;
+                return await villains;
             }
             catch (Exception e)
             {
@@ -40,12 +40,12 @@ namespace GuardiansOfGlobeApi.Controllers
         {
             try
             {
-                AlterEgo? hero = await _context.AlterEgos.FirstOrDefaultAsync(
-                    a => a.IsHero == true && a.AlterEgoId == id
+                AlterEgo? villain = await _context.AlterEgos.FirstOrDefaultAsync(
+                    a => a.IsHero == false && a.AlterEgoId == id
                 );
 
-                if (hero != null)
-                    return hero;
+                if (villain != null)
+                    return villain;
                 else
                     return NotFound();
             } catch (Exception e) {
@@ -55,19 +55,19 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<AlterEgo>> Create(AlterEgo heroCreate)
+        public async Task<ActionResult<AlterEgo>> Create(AlterEgo villainCreate)
         {
-            if (heroCreate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
+            if (villainCreate.IsHero == true) return BadRequest("Field 'IsHero' must be false for villains");
 
-            heroCreate.IsHero = true;
+            villainCreate.IsHero = false;
 
             try
             {
-                await _context.AlterEgos.AddAsync(heroCreate);
+                await _context.AlterEgos.AddAsync(villainCreate);
                 await _context.SaveChangesAsync();
-                heroCreate.AlterEgoId = await _context.AlterEgos.MaxAsync(a => a.AlterEgoId);
+                villainCreate.AlterEgoId = await _context.AlterEgos.MaxAsync(a => a.AlterEgoId);
 
-                return heroCreate;
+                return villainCreate;
             }
             catch (DbUpdateException e)
             {
@@ -82,27 +82,27 @@ namespace GuardiansOfGlobeApi.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<AlterEgo>> Update(AlterEgo heroUpdate)
+        public async Task<ActionResult<AlterEgo>> Update(AlterEgo villainUpdate)
         {
-            if (heroUpdate == null || heroUpdate.AlterEgoId <= 0)
+            if (villainUpdate == null || villainUpdate.AlterEgoId <= 0)
                 return BadRequest("Missing data");
             
-            if (heroUpdate.IsHero == false) return BadRequest("Field 'isHero' must be true for heroes");
+            if (villainUpdate.IsHero == true) return BadRequest("Field 'IsHero' must be false for villains");
 
-            heroUpdate.IsHero = true;
+            villainUpdate.IsHero = false;
 
             try
             {
-                AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == heroUpdate.AlterEgoId);
+                AlterEgo? alterEgo = await _context.AlterEgos.FirstOrDefaultAsync(a => a.AlterEgoId == villainUpdate.AlterEgoId);
 
                 if (alterEgo == null)
                     return NotFound();
 
-                //alterEgo.AlterEgoId = heroUpdate.AlterEgoId;
-                alterEgo.PersonId = heroUpdate.PersonId;
-                alterEgo.Origin = heroUpdate.Origin;
-                alterEgo.IsHero = heroUpdate.IsHero;
-                alterEgo.Alias = heroUpdate.Alias;
+                //alterEgo.AlterEgoId = villainUpdate.AlterEgoId;
+                alterEgo.PersonId = villainUpdate.PersonId;
+                alterEgo.Origin = villainUpdate.Origin;
+                alterEgo.IsHero = villainUpdate.IsHero;
+                alterEgo.Alias = villainUpdate.Alias;
 
                 _context.AlterEgos.Update(alterEgo);
                 await _context.SaveChangesAsync();
