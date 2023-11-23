@@ -1,0 +1,12 @@
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\bin\Debug\net6.0\GuardiansOfGlobe.DataAccess.deps.json
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\bin\Debug\net6.0\GuardiansOfGlobe.DataAccess.dll
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\bin\Debug\net6.0\GuardiansOfGlobe.DataAccess.pdb
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\obj\Debug\net6.0\GuardiansOfGlobe.DataAccess.csproj.AssemblyReference.cache
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\obj\Debug\net6.0\GuardiansOfGlobe.DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\obj\Debug\net6.0\GuardiansOfGlobe.DataAccess.AssemblyInfoInputs.cache
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\obj\Debug\net6.0\GuardiansOfGlobe.DataAccess.AssemblyInfo.cs
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\obj\Debug\net6.0\GuardiansOfGlobe.DataAccess.csproj.CoreCompileInputs.cache
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\obj\Debug\net6.0\GuardiansOfGlobe.DataAccess.dll
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\obj\Debug\net6.0\refint\GuardiansOfGlobe.DataAccess.dll
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\obj\Debug\net6.0\GuardiansOfGlobe.DataAccess.pdb
+C:\Users\User\Leo\Actividades\C#\02-sophos\04-reto\guardians-of-globe-backend\GuardiansOfGlobe.DataAccess\obj\Debug\net6.0\ref\GuardiansOfGlobe.DataAccess.dll
